@@ -9,19 +9,21 @@ export function useDimensions(responsive = true) {
   const hook = useCallback((element) => setElement(element), []);
 
   useLayoutEffect(() => {
-    if (element)
-      (function updateDimensions() {
+    if (element) {
+      const updateDimensions = () => {
         window.requestAnimationFrame(() => {
           setDimensions(getDimensions(element));
         });
-      })();
+      };
+      updateDimensions();
 
-    if (responsive) {
-      window.addEventListener('resize', updateDimensions);
+      if (responsive) {
+        window.addEventListener('resize', updateDimensions);
 
-      return () => window.removeEventListener('resize', updateDimensions);
+        return () => window.removeEventListener('resize', updateDimensions);
+      }
     }
-  }, []);
+  }, [element, hook, responsive]);
 
   return [hook, dimensions, element];
 }
